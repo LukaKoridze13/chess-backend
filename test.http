@@ -1,0 +1,8 @@
+POST http://localhost:3500/accounts/create HTTP/1.1
+content-type: application/json
+
+{
+    "username": "ss1$dg",
+    "password": "sam",
+    "date_registered": "2023-05-21T20:35:49.384Z"
+}
