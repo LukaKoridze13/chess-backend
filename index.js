@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-app.use("api/accounts", AccountRequests);
+app.use("/api/accounts", AccountRequests);
 
 app.get("/", (req, res) => {
   res.send("Server is running successfully");

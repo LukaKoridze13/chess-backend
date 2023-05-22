@@ -1,4 +1,4 @@
-POST http://localhost:3500/accounts/create HTTP/1.1
+POST http://localhost:3500/api/accounts/create HTTP/1.1
 content-type: application/json
 
 {
