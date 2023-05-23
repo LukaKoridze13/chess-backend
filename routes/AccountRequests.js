@@ -1,9 +1,26 @@
-import Account from "../schemas/Account.js";
 import express from "express";
+import Account from "../schemas/Account.js";
+import { sha256 } from "js-sha256";
+
 const app = express.Router();
 
 app.post("/create", async (req, res) => {
   let { username, password, date_registered } = req.body;
+
+  // Check if username is provided
+  if (!username) {
+    return res.status(400).send({ error: "Username is required" });
+  }
+
+  // Check if password is provided
+  if (!password) {
+    return res.status(400).send({ error: "Password is required" });
+  }
+
+  // Check if date_registered is provided
+  if (!date_registered) {
+    return res.status(400).send({ error: "Date registered is required" });
+  }
 
   // Check if account already exists
   if (await Account.exists({ username })) {
@@ -46,6 +63,7 @@ app.post("/create", async (req, res) => {
   });
 
   // Register account
+  password = sha256(password);
   let newAccount = new Account({
     username,
     password,
@@ -57,9 +75,21 @@ app.post("/create", async (req, res) => {
   });
 });
 
-app.get("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  // Check if username is provided
+  if (!username) {
+    return res.status(400).send({ error: "Username is required" });
+  }
+
+  // Check if password is provided
+  if (!password) {
+    return res.status(400).send({ error: "Password is required" });
+  }
+  
+
   try {
+    
     // Check if the account exists
     const account = await Account.findOne({ username });
 
@@ -68,7 +98,7 @@ app.get("/login", async (req, res) => {
     }
 
     // Validate the password
-    if (account.password !== password) {
+    if (account.password !== sha256(password)) {
       return res.status(401).send({ error: "Invalid password" });
     }
 
@@ -79,7 +109,5 @@ app.get("/login", async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 });
-
-
 
 export default app;
