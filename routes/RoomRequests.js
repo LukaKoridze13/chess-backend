@@ -64,11 +64,17 @@ app.post("/join", async (req, res) => {
 
     const io = req.app.locals.io;
     io.to(room_id).emit("start");
-    
+
     res.status(200).send({ message: "Joined room successfully" });
   } catch (error) {
     res.status(500).send({ error: "Internal server error" });
   }
+});
+
+app.get("/:room_id", async (req, res) => {
+  let { room_id } = req.params;
+  let room = await Room.findOne({ room_id });
+  res.status(200).send({ room });
 });
 
 // Function to generate a random alphanumeric ID

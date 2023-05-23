@@ -32,17 +32,22 @@ await mongoose.connect(process.env.MONGO_URL).then(() => {
   io.on("connect", (socket) => {
     usersOnline++;
     io.emit("online", usersOnline);
-  
+
     socket.on("disconnect", () => {
       usersOnline--;
       io.emit("online", usersOnline);
     });
 
-    socket.on('joinRoom',(roomID)=>{
-      socket.join(roomID)
-    })
+    socket.on("joinRoom", (roomID) => {
+      socket.join(roomID);
+    });
+
+    socket.on("sentUpdate", (obj) => {
+      let { figures, room_id, color } = obj;
+      io.to(room_id).emit('receivedUpdate',{figures, color})
+    });
+    
   });
 
   app.locals.io = io;
 });
-
