@@ -46,6 +46,11 @@ await mongoose.connect(process.env.MONGO_URL).then(() => {
       let { figures, room_id, color } = obj;
       io.to(room_id).emit('receivedUpdate',{figures, color})
     });
+
+    socket.on('end',(data)=>{
+      let { end, room_id } = data;
+      io.to(room_id).emit('onEnd', end)
+    })
     
   });
 
